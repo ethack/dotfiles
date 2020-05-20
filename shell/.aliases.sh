@@ -4,10 +4,20 @@ exists () {
 }
 
 # files
-# alias ls="ls --human-readable --classify --group-directories-first --color=auto"
+if exists exa; then
+  if [ -f "$HOME/.local/share/fonts/Regular/Hack Regular Nerd Font Complete.ttf" ]; then
+    alias ls="exa --classify --git --header --group --icons"
+  else
+    alias ls="exa --classify --git --header --group"
+  fi
+  alias lt='ls --long --tree --level 3'
+else
+  alias ls="ls --human-readable --classify --group-directories-first --color=auto"
+fi
+
 alias l='ls'
 alias ll='ls -l'
-alias la='ls -l -a'
+alias la='ls -la'
 alias ..='cd ..'
 alias ...='cd ../..'
 alias mv='mv -i'

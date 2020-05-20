@@ -34,6 +34,7 @@ if [ -s "$HOME/.zgen/zgen.zsh" ]; then
         zgen oh-my-zsh plugins/docker-compose
         zgen oh-my-zsh plugins/ripgrep
         # zgen oh-my-zsh plugins/sudo
+        # thefuck is not working
         zgen oh-my-zsh plugins/thefuck
         zgen oh-my-zsh themes/steeef
         # themes: agnoster (additional setup), arrow, bira, blinks, steeef
@@ -43,12 +44,9 @@ if [ -s "$HOME/.zgen/zgen.zsh" ]; then
         zgen load zsh-users/zsh-history-substring-search
         zgen load zsh-users/zsh-completions
         # requires lua, faster fasd or z
-        # zgen load skywind3000/z.lua
+        zgen load skywind3000/z.lua
         # directory listings with git features
-        zgen load supercrabtree/k
-        # enables zsh's cdr features; must be before zaw
-        zgen load willghatch/zsh-cdr
-        zgen load zsh-users/zaw
+        # zgen load supercrabtree/k
 
         # https://github.com/ohmyzsh/ohmyzsh/wiki/External-themes
         # external themes: zsh2000, powerlevel10k, Bullet Train, Gitster, Spaceship ZSH, Nodeys

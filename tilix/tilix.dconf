@@ -1,0 +1,32 @@
+[/]
+copy-on-select=true
+prompt-on-close=true
+prompt-on-close-process=false
+prompt-on-delete-profile=true
+quake-active-monitor=true
+quake-hide-headerbar=true
+quake-hide-lose-focus=true
+quake-specific-monitor=0
+terminal-title-style='none'
+theme-variant='system'
+use-tabs=true
+warn-vte-config-issue=false
+window-style='borderless'
+
+[profiles]
+list=['2b7c4080-0ddd-46c5-8f23-563fd3ba789d']
+
+[profiles/2b7c4080-0ddd-46c5-8f23-563fd3ba789d]
+background-color='#FDF6E3'
+badge-color-set=false
+bold-color-set=false
+cursor-colors-set=false
+font='Hack Nerd Font 12'
+foreground-color='#657B83'
+highlight-colors-set=false
+login-shell=true
+palette=['#000000', '#CC0000', '#4D9A05', '#C3A000', '#3464A3', '#754F7B', '#05979A', '#D3D6CF', '#545652', '#EF2828', '#89E234', '#FBE84F', '#729ECF', '#AC7EA8', '#34E2E2', '#EDEDEB']
+terminal-bell='none'
+use-system-font=false
+use-theme-colors=true
+visible-name='Default'

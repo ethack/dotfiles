@@ -27,11 +27,17 @@ install \
 docker.io \
 docker-compose \
 golang-1.14 \
+lua5.3 \
 python3 \
 python3-pip \
 
 ln -s /usr/lib/go-1.14/bin/go /usr/lib/bin/go
 ln -s /usr/lib/go-1.14/bin/gofmt /usr/lib/bin/gofmt
+
+wget -O /tmp/exa.zip https://github.com/ogham/exa/releases/download/v0.9.0/exa-linux-x86_64-0.9.0.zip
+unzip -j -d /usr/local/bin/ /tmp/exa.zip
+mv /usr/local/bin/exa-linux-x86_64 /usr/local/bin/exa
+rm /tmp/exa.zip
 
 pip3 install thefuck
 
