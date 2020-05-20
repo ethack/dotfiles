@@ -1,0 +1,55 @@
+#!/bin/zsh
+
+# change these based on your own configuration
+local vpnconfig="$HOME/.vpn"
+local dockerimage="vpn"
+local sshkeys="$(cat ~/.ssh/id_rsa.pub)"
+# TODO dynamically add ssh config entries?
+# give container a name vpn-$vnpendpoint; make ssh alias that will connect with this name: jump $vpnendpoint
+
+# name of vpn passed in
+local vpnendpoint="$1"
+# port to start a SOCKS proxy on
+local dynamicport=$2
+# if a dynamic port was not specified, default to port 1080
+if [ -z "$dynamicport" ]; then dynamicport=1080; fi
+
+# get a temporary filename; docker will refuse to run if it already exists
+local cidtmp="$(mktemp --dry-run)"
+
+# fork the following loop in the background
+# TODO: if we exit out of the docker command prematurely this loop could never end
+while sleep 1; do
+    # docker will store the container ID in this file
+    if [ -s "$cidtmp" ]; then
+        # load the container ID into a variable
+        local cid="$(cat "$cidtmp")"; rm -f "$cidtmp"
+        # inspect the running container and pull out the port
+        local sshport=$(docker inspect "$cid" | jq -r '.[0].NetworkSettings.Ports."22/tcp"[0].HostPort')
+        # start an SSH connection for a SOCKS proxy through the VPN
+        ssh -N -o ConnectionAttempts=30 -o ConnectTimeout=1 -o NoHostAuthenticationForLocalhost=yes -D $dynamicport -p $sshport root@localhost
+        # -N does not execute a remote command (i.e. no bash shell)
+        # -o ConnectionAttempts=30 how many total connection attempts to make (in case ssh isn't ready)
+        # -o ConnectTimeout=1 wait 1 second for a response before trying again
+        # -o NoHostAuthenticationForLocalhost=yes skip host key verification prompt since it will be on a new port each time
+        # -D $dynamicport starts a SOCKS proxy on the specified port
+        # -p $sshport connect to the port we got from the docker container
+        break
+    fi
+done >/dev/null &
+
+# this must be run interactive as it prompts for credentials
+docker run -it --rm --cidfile="$cidtmp" --cap-add=NET_ADMIN --device /dev/net/tun -v "$vpnconfig":/vpn -P -e AUTHORIZED_KEYS="$sshkeys" "$dockerimage" openvpn --config /vpn/${vpnendpoint}.ovpn --auth-user-pass /vpn/${vpnendpoint}.creds --auth-retry interact
+# run -it --rm run a command in a container, allow interactive input, and remove the container when it exits
+# --cidfile="$cidtmp" write the container's ID to a file so we can access it later
+# --cap-add=NET_ADMIN --device /dev/net/tun required for openvpn
+# -v "$vpnconfig":/vpn mount the directory containing any vpn config files in the container
+# -P publish the container's exposed port on an unused high port (to allow multiple simultaneous VPNs)
+# -e AUTHORIZED_KEYS="$sshkeys" tell the container which ssh keys to allow
+# "$dockerimage" the name of the vpn docker image
+# openvpn runs the command openvpn inside the container
+# --config /vpn/${vpnendpoint}.ovpn the name of the config file to use
+# TODO allow storing these in an encrypted manner; pass key via env, decrypt and unset key; hide arg from process list
+# --auth-user-pass /vpn/${vpnendpoint}.creds the name of the file storing the credentials 
+# --auth-retry interact allow prompting for 2FA token
+

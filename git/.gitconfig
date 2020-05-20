@@ -1,0 +1,8 @@
+[user]
+	name = Ethan Robish
+	email = ethan.robish@gmail.com
+[push]
+	default = simple
+[alias]
+	unadd = reset HEAD
+	yolo = !git commit -m \"$(curl -s whatthecommit.com/index.txt)\"
